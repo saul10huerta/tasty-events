@@ -4,6 +4,8 @@ var eventsContainerEl = document.querySelector("#events-container");
 var eventArray = []
 var page = 0
 var totalPages = null
+var cityLat = null
+var cityLon = null
 
 // Get data from Ticketmaster
 var ticketmaster = function (city, pageNumber) {
@@ -29,7 +31,7 @@ var ticketmaster = function (city, pageNumber) {
             };
             // grabs page total from API and assigns it to totalPages to be used outside of function
             totalPages = data.page.totalPages
-            return totalPages
+
         });
     });
 };
