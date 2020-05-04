@@ -1,9 +1,17 @@
-var body = document.querySelector("body")
-var city = "Austin";
+var body = document.querySelector("body");
+var cityInput = null;
 var eventsContainerEl = document.querySelector("#events-container");
-var eventArray = []
-var page = 0
-var totalPages = null
+var page = 0;
+var totalPages = null;
+var cityForm = document.querySelector("#city-form");
+
+// Form for city
+var formSubmitHandler = function () {
+    event.preventDefault();
+    $("#events-container").empty();
+    cityInput = $("#city-input").val();
+    ticketmaster(cityInput, 0);
+}
 
 // Get data from Ticketmaster
 var ticketmaster = function (city, pageNumber) {
@@ -29,7 +37,7 @@ var ticketmaster = function (city, pageNumber) {
             };
             // grabs page total from API and assigns it to totalPages to be used outside of function
             totalPages = data.page.totalPages
-            return totalPages
+            // return totalPages
         });
     });
 };
@@ -45,7 +53,6 @@ $("#load-more").click(function() {
     };
 });
 
-
-ticketmaster("Austin", 0);
-
+// when city is submitted run form submit handler
+cityForm.addEventListener("submit", formSubmitHandler);
 
