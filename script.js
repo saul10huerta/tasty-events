@@ -4,6 +4,8 @@ var eventsContainerEl = document.querySelector("#events-container");
 var page = 0;
 var totalPages = null;
 var cityForm = document.querySelector("#city-form");
+var eventLat = null;
+var eventLon = null;
 
 // Form for city
 var formSubmitHandler = function () {
@@ -24,7 +26,7 @@ var ticketmaster = function (city, pageNumber) {
             for (var i = 0; i < eventList.length; i++) {                 
                 // create container for event info
                 var event = $("<div>")
-                    .append(eventImg, eventName, eventDateVenue);
+                    .append(eventImg, eventName, eventDateVenue, latSpan, lonSpan, foodBtn);
                 // create elements for event info
                 var eventImg = $("<img>")
                     .attr("src", eventList[i].images[0].url);
@@ -32,9 +34,28 @@ var ticketmaster = function (city, pageNumber) {
                     .text(eventList[i].name);
                 var eventDateVenue = $("<p>")
                     .text("Date: " + eventList[i].dates.start.localDate + " | " + eventList[i]._embedded.venues[0].name + eventList[i]._embedded.venues[0].city.name + eventList[i]._embedded.venues[0].state.stateCode);
+                // get lat and lon for the venue of each event and hide it
+                var latSpan = $("<span hidden>")
+                    .addClass("latitude")
+                    .text(eventList[i]._embedded.venues[0].location.latitude)
+                var lonSpan = $("<span hidden>")
+                    .addClass("longitude")
+                    .text(eventList[i]._embedded.venues[0].location.longitude)
+                var foodBtn = $("<button>")
+                    .addClass("food-button")
+                    .text("Nearby Food")
                 // append event containter to events container
                 $(eventsContainerEl).append(event);
             };
+            // when certain button is clicked, look at the parent to find specific lat and lon of venue
+            $(".food-button").click(function () {
+                eventLat = $(this).parent().find(".latitude").text()
+                eventLon = $(this).parent().find(".longitude").text()
+                $("#food-modal").addClass("active");
+                $("#restaurants-container").empty();
+                displayZomato();
+                
+            })
             // grabs page total from API and assigns it to totalPages to be used outside of function
             totalPages = data.page.totalPages
             // return totalPages
@@ -63,22 +84,32 @@ var key = "82359ff64f3766634a1dab8ede2ba7d9";
 var lat = "30.2672";
 var lon = "-97.7431"
 
-var apiURL = "https://developers.zomato.com/api/v2.1/geocode?apikey=" + key + "&lat=" + lat + "&lon=" + lon;
+// var apiURL = "https://developers.zomato.com/api/v2.1/geocode?apikey=" + key + "&lat=" + eventLat + "&lon=" + eventLon;
 
-fetch(apiURL)
-.then((response) => {
-  return response.json();
-})
-.then((data) => {
-  displayZomato(data);
-  console.log(data);
-});
+// fetch(apiURL)
+// .then((response) => {
+//   return response.json();
+// })
+// .then((data) => {
+// //   displayZomato(data);
+//   console.log(data);
+// });
 
 
 // function to display Zomato Restautant Data based on location with lat & lon
 // restaurant name, restaurant location, cuisine, cost,aggregate rating, featured-img
 
-var displayZomato = function(data) {
+var displayZomato = function() {
+    var apiURL = "https://developers.zomato.com/api/v2.1/geocode?apikey=" + key + "&lat=" + eventLat + "&lon=" + eventLon;
+
+    fetch(apiURL)
+    .then((response) => {
+    return response.json();
+    })
+    .then((data) => {
+    //   displayZomato(data);
+    console.log(data);
+   
 
 
   for(let i = 0; i < data.nearby_restaurants.length; i++) {
@@ -129,6 +160,7 @@ var displayZomato = function(data) {
     divEl.appendChild(imgEl);
 
   }
-  
+    
+    });
 
 }
