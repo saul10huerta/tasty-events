@@ -98,6 +98,7 @@ cityForm.addEventListener("submit", formSubmitHandler);
 
 
 
+
 divEl = document.querySelector("#restaurants-container");
 
 var displayZomato = function() {
