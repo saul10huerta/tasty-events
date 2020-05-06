@@ -1,5 +1,6 @@
 var body = document.querySelector("body");
-var cityInput = null;
+var cityInput = $("#city-input");
+var cityEntered = null;
 var eventsContainerEl = document.querySelector("#events-container");
 var page = 0;
 var totalPages = null;
@@ -14,10 +15,8 @@ var loadCity = function () {
     cityArray = JSON.parse(localStorage.getItem("city"))
     if (!cityArray) {
         cityArray = []
-        console.log("if")
     } 
     else {
-        console.log("else")
         for (var i = 0; i < cityArray.length; i++) {
             var savedCity = document.createElement("p")
             savedCity.setAttribute("id", cityArray[i])
@@ -30,10 +29,10 @@ var loadCity = function () {
 var saveCity = function () {
     // if array is empty, add city to local storage
     if (cityArray.length === 0) {
-        cityArray.push(cityInput)
+        cityArray.push(cityEntered)
         var savedCity = document.createElement("p")
-        savedCity.setAttribute("id", cityInput)
-        savedCity.textContent = cityInput
+        savedCity.setAttribute("id", cityEntered)
+        savedCity.textContent = cityEntered
         savedCityContainerEl.appendChild(savedCity)
         localStorage.setItem("city", JSON.stringify(cityArray))
     }
@@ -42,10 +41,10 @@ var saveCity = function () {
     }
     // if cityInput doesn't match value, add it to local storage
     else {
-        cityArray.push(cityInput)
+        cityArray.push(cityEntered)
         var savedCity = document.createElement("p")
-        savedCity.setAttribute("id", cityInput)
-        savedCity.textContent = cityInput
+        savedCity.setAttribute("id", cityEntered)
+        savedCity.textContent = cityEntered
         savedCityContainerEl.appendChild(savedCity)
         localStorage.setItem("city", JSON.stringify(cityArray))
     };
@@ -53,18 +52,17 @@ var saveCity = function () {
 // function to check if cityInput matches value in array
 var checkCity = function () {
     for (var i = 0; i < cityArray.length; i++) {
-        if (cityInput === cityArray[i]) {
+        if (cityEntered === cityArray[i]) {
             return true
         };
     };
 };
-
 // Form for city
 var formSubmitHandler = function () {
     event.preventDefault();
     $("#events-container").empty();
-    cityInput = $("#city-input").val();
-    ticketmaster(cityInput, 0);
+    cityEntered = cityInput.val()
+    ticketmaster(cityEntered, 0);
     saveCity();
 }
 
@@ -147,8 +145,6 @@ $("#load-more").click(function() {
     };
 });
 
-// when city is submitted run form submit handler
-cityForm.addEventListener("submit", formSubmitHandler);
 
 
 
@@ -212,5 +208,15 @@ var displayZomato = function() {
     });    
 };
 
+// click on saved city name load city weather
+$("#save-container").on("click", "p", function () {
+    var text = $(this)
+        .text()
+        .trim();
+    cityInput.val(text)
+    formSubmitHandler();
+})
 
 loadCity();
+// when city is submitted run form submit handler
+cityForm.addEventListener("submit", formSubmitHandler);
