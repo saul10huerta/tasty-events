@@ -6,6 +6,58 @@ var totalPages = null;
 var cityForm = document.querySelector("#city-form");
 var eventLat = null;
 var eventLon = null;
+var cityArray = [];
+var savedCityContainerEl = document.querySelector("#save-container")
+
+
+var loadCity = function () {
+    cityArray = JSON.parse(localStorage.getItem("city"))
+    if (!cityArray) {
+        cityArray = []
+        console.log("if")
+    } 
+    else {
+        console.log("else")
+        for (var i = 0; i < cityArray.length; i++) {
+            var savedCity = document.createElement("p")
+            savedCity.setAttribute("id", cityArray[i])
+            savedCity.textContent = cityArray[i]
+            savedCityContainerEl.appendChild(savedCity)
+        };
+    };
+};
+
+var saveCity = function () {
+    // if array is empty, add city to local storage
+    if (cityArray.length === 0) {
+        cityArray.push(cityInput)
+        var savedCity = document.createElement("p")
+        savedCity.setAttribute("id", cityInput)
+        savedCity.textContent = cityInput
+        savedCityContainerEl.appendChild(savedCity)
+        localStorage.setItem("city", JSON.stringify(cityArray))
+    }
+    // if cityInput matches value in local storage, don't do anything
+    else if (checkCity() === true) {
+    }
+    // if cityInput doesn't match value, add it to local storage
+    else {
+        cityArray.push(cityInput)
+        var savedCity = document.createElement("p")
+        savedCity.setAttribute("id", cityInput)
+        savedCity.textContent = cityInput
+        savedCityContainerEl.appendChild(savedCity)
+        localStorage.setItem("city", JSON.stringify(cityArray))
+    };
+};
+// function to check if cityInput matches value in array
+var checkCity = function () {
+    for (var i = 0; i < cityArray.length; i++) {
+        if (cityInput === cityArray[i]) {
+            return true
+        };
+    };
+};
 
 // Form for city
 var formSubmitHandler = function () {
@@ -13,7 +65,9 @@ var formSubmitHandler = function () {
     $("#events-container").empty();
     cityInput = $("#city-input").val();
     ticketmaster(cityInput, 0);
+    saveCity();
 }
+
 
 // Get data from Ticketmaster
 var ticketmaster = function (city, pageNumber) {
@@ -51,7 +105,7 @@ var ticketmaster = function (city, pageNumber) {
                                 .addClass("longitude")
                                 .text(data.results[0].locations[0].latLng.lon)
                         });
-                    })
+                    });
                 } else {
                     var latSpan = $("<span hidden>")
                         .addClass("latitude")
@@ -157,3 +211,6 @@ var displayZomato = function() {
         });
     });    
 };
+
+
+loadCity();
