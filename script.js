@@ -35,12 +35,32 @@ var ticketmaster = function (city, pageNumber) {
                 var eventDateVenue = $("<p>")
                     .text("Date: " + eventList[i].dates.start.localDate + " | " + eventList[i]._embedded.venues[0].name + eventList[i]._embedded.venues[0].city.name + eventList[i]._embedded.venues[0].state.stateCode);
                 // get lat and lon for the venue of each event and hide it
-                var latSpan = $("<span hidden>")
-                    .addClass("latitude")
-                    .text(eventList[i]._embedded.venues[0].location.latitude)
-                var lonSpan = $("<span hidden>")
-                    .addClass("longitude")
-                    .text(eventList[i]._embedded.venues[0].location.longitude)
+                // if the event doesn't have a location get lat and lon from Mapquest API
+                if (!eventList[i]._embedded.venues[0].location) {
+                    var eventAddress = eventList[i]._embedded.venues[0].address.line1
+                    var eventCity = eventList[i]._embedded.venues[0].city.name
+                    var eventState = eventList[i]._embedded.venues[0].state.name
+                    fetch("http://open.mapquestapi.com/geocoding/v1/address?key=D6yxIoaQjYKEF0GYIb5DdsdZlv0W5GSM&location=" + eventAddress + "%20" + eventAddress + eventState)
+                    .then((response) => {
+                        return response.json()
+                        .then((data) => {
+                            // console.log(data.results[0].locations[0].latLng)
+                            var latSpan = $("<span hidden>")
+                                .addClass("latitude")
+                                .text(data.results[0].locations[0].latLng.lat)
+                            var lonSpan = $("<span hidden>")
+                                .addClass("longitude")
+                                .text(data.results[0].locations[0].latLng.lon)
+                        });
+                    })
+                } else {
+                    var latSpan = $("<span hidden>")
+                        .addClass("latitude")
+                        .text(eventList[i]._embedded.venues[0].location.latitude);
+                    var lonSpan = $("<span hidden>")
+                        .addClass("longitude")
+                        .text(eventList[i]._embedded.venues[0].location.longitude)
+                };
                 var foodBtn = $("<button>")
                     .addClass("food-button")
                     .text("Nearby Food")
@@ -51,9 +71,9 @@ var ticketmaster = function (city, pageNumber) {
             $(".food-button").click(function () {
                 eventLat = $(this).parent().find(".latitude").text()
                 eventLon = $(this).parent().find(".longitude").text()
-                $("#food-modal").addClass("active");
                 $("#restaurants-container").empty();
                 displayZomato();
+                $("#food-modal").modal("show");
                 
             })
             // grabs page total from API and assigns it to totalPages to be used outside of function
