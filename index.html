@@ -7,23 +7,57 @@
     <title>Project 1</title>
 </head>
 <body>
-    <header>Project 1</header>
-    <p>HTML will go on this file.</p>
+    
+    <!-- Page Contents -->
+    <div class="pusher">
+        <div class="ui inverted vertical masthead center aligned segment">
+    
+            <div class="ui container">
+                <div class="ui large secondary inverted pointing menu">
+                    <a class="toc item">
+                        <i class="sidebar icon"></i>
+                    </a>
+                    <a class="active item">Home</a>
+                    <a class="item">TBD</a>
+                    <a class="item">TBD</a>
+                    <a class="item">TBD</a>
+                    <div class="right item">
+                        <!-- <a class="ui inverted button">Log in</a>
+                        <a class="ui inverted button">Sign Up</a> -->
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="ui text container">
+                <h1 class="ui inverted header">
+                Tasty Events
+                </h1>
+                <h2>Find local events and restaurants near by!</h2>
+                <!-- City Form -->
+                <div id="form-container">
+                    <form id="city-form">
+                        <label for="city-input">Search Events by City</label>
+                        <input type="text" id="city-input" name="city-name">
+                        <button class="ui inverted primary button" type="submit" id="submit-btn">Search <i class="right arrow icon"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
-    <!-- City Form -->
-    <div id="form-container">
-        <form id="city-form">
-            <label for="city-input">Search Events by City</label>
-            <input type="text" id="city-input" name="city-name">
-            <button type="submit" id="submit-btn">Search</button>
-        </form>
+        <div class="ui grid" id="events-container">
+            
+        </div>
+
+        <div class="ui middle aligned stackable grid container">
+            <div class="row">
+                <div class="center aligned column">
+                    <button class="ui huge button" id="load-more">Load More</button>
+                </div>
+            </div>
+        </div>
+        
     </div>
-
-    <!-- Ticketmaster Events -->
-    <div id="events-container"></div>
-    
-    <button  id="load-more">Load More</button>
-    
 
     <div class="ui modal" id="food-modal">
         <div class="header">Nearby Restaurants</div>
