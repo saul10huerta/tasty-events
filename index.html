@@ -3,10 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project 1</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <title>Tasty Events</title>
 </head>
 <body>
-    <header>Project 1</header>
-    <p>HTML will go on this file.</p>
+    
+    <!-- Page Contents -->
+    <div class="pusher">
+        <div class="ui inverted vertical masthead center aligned segment" id="hero-section">
+    
+            <div class="ui container">
+                <div class="ui large secondary inverted pointing menu">
+                    <a class="toc item">
+                        <i class="sidebar icon"></i>
+                    </a>
+                    <a class="active item">Home</a>
+                    <a class="item">TBD</a>
+                    <a class="item">TBD</a>
+                    <a class="item">TBD</a>
+                    <div class="right item"></div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="ui text container">
+                <h1 class="ui inverted header">
+                    Tasty Events
+                </h1>
+                <h2>Find local events and restaurants near by!</h2>
+                <!-- City Form -->
+                <div id="form-container">
+                    <form id="city-form">
+                        <label for="city-input">Search Events by City:</label><br>
+                        <input type="text" id="city-input" name="city-name"><br><br>
+                        <button class="ui inverted large primary button" type="submit" id="submit-btn">Search <i class="right arrow icon"></i></button>
+                    </form>
+                </div>
+                <h1 class="ui inverted header">
+                    <u>Saved Cities</u>
+                    </h1>
+                <br>
+                <br>
+                <div class="ui grid" id="save-container">
+                </div>
+                <br>
+                <br>
+                <button class="ui inverted primary button" type="submit" id="clear-history">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Ticketmaster Events -->
+        <div class="ui vertically divided grid" id="events-container"></div>
+        <div class="ui middle aligned stackable grid container">
+            <div class="row" id="loadbutton-section">
+                <div class="center aligned column">
+                    <button class="ui huge button" id="load-more">Load More</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui modal" id="food-modal">
+        <div class="header">Nearby Restaurants</div>
+        <div class="scrolling content" id="restaurants-container">
+          <!-- Restaurants Information to go inside modal here-->
+        </div>
+    </div>
+    
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script src="./script.js"></script>
 </body>
 </html>
