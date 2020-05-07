@@ -198,7 +198,7 @@ var displayZomato = function() {
                 var restAggregateRating = data.nearby_restaurants[i].restaurant.user_rating.aggregate_rating;
                 var restImg = data.nearby_restaurants[i].restaurant.featured_image
                 // create a modal to hold restaurants info
-                var restaurantsNameEl = document.createElement("p");
+                var restaurantsNameEl = document.createElement("h3");
                 restaurantsNameEl.className =" ";
                 restaurantsNameEl.id = "";
                 restaurantsNameEl.textContent = restName;
@@ -229,6 +229,7 @@ var displayZomato = function() {
                 divEl.appendChild(restLocationEl);
 
                 var imgEl = document.createElement("img");
+                imgEl.className = "ui large bordered rounded image"
                 imgEl.id = "";
                 imgEl.src = restImg;
                 divEl.appendChild(imgEl);
