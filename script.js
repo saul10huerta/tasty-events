@@ -26,6 +26,17 @@ var loadCity = function () {
     };
 };
 
+// clear recent search (local storage)
+$("#clear-history").on("click", function() {
+    localStorage.clear();
+    var child = savedCityContainerEl.lastElementChild;
+    while (child) {
+        savedCityContainerEl.removeChild(child);
+        child = savedCityContainerEl.lastElementChild
+    }
+    cityArray = []
+});
+
 var saveCity = function () {
     // if array is empty, add city to local storage
     if (cityArray.length === 0) {
@@ -75,10 +86,7 @@ var ticketmaster = function (city, pageNumber) {
         .then((data) => {
             var eventList = data._embedded.events;
             // loop for events
-            for (var i = 0; i < eventList.length; i++) {                 
-                // create container for event info
-                var event = $("<div>")
-                    .append(eventImg, eventName, eventDateVenue, latSpan, lonSpan, foodBtn);
+            for (var i = 0; i < eventList.length; i++) {  
                 // create elements for event info
                 var eventImg = $("<img>")
                     .attr("src", eventList[i].images[0].url);
@@ -116,6 +124,10 @@ var ticketmaster = function (city, pageNumber) {
                     .addClass("food-button")
                     .text("Nearby Food")
                 // append event containter to events container
+                // create container for event info
+                var event = $("<div>")
+                    .append(eventImg, eventName, eventDateVenue, latSpan, lonSpan, foodBtn);
+
                 $(eventsContainerEl).append(event);
             };
             // when certain button is clicked, look at the parent to find specific lat and lon of venue
