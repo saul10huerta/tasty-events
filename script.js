@@ -74,7 +74,7 @@ var formSubmitHandler = function () {
     $("#events-container").empty();
     cityEntered = cityInput.val()
     ticketmaster(cityEntered, 0);
-    saveCity();
+    // saveCity();
 }
 
 
@@ -82,68 +82,83 @@ var formSubmitHandler = function () {
 var ticketmaster = function (city, pageNumber) {
     fetch("https://app.ticketmaster.com/discovery/v2/events.json?apikey=2umjA6L6GdnhhnFn7dbnGxUBjPWr9bDf&city=" + city + "&sort=date,asc&page=" + pageNumber)
     .then((response) => {
-        return response.json()
-        .then((data) => {
-            var eventList = data._embedded.events;
-            // loop for events
-            for (var i = 0; i < eventList.length; i++) {  
-                // create elements for event info
-                var eventImg = $("<img>")
-                    .attr("src", eventList[i].images[0].url);
-                var eventName = $("<h4>")
-                    .text(eventList[i].name);
-                var eventDateVenue = $("<p>")
-                    .text("Date: " + eventList[i].dates.start.localDate + " | " + eventList[i]._embedded.venues[0].name + eventList[i]._embedded.venues[0].city.name + eventList[i]._embedded.venues[0].state.stateCode);
-                // get lat and lon for the venue of each event and hide it
-                // if the event doesn't have a location get lat and lon from Mapquest API
-                if (!eventList[i]._embedded.venues[0].location) {
-                    var eventAddress = eventList[i]._embedded.venues[0].address.line1
-                    var eventCity = eventList[i]._embedded.venues[0].city.name
-                    var eventState = eventList[i]._embedded.venues[0].state.name
-                    fetch("http://open.mapquestapi.com/geocoding/v1/address?key=D6yxIoaQjYKEF0GYIb5DdsdZlv0W5GSM&location=" + eventAddress + "%20" + eventAddress + eventState)
-                    .then((response) => {
-                        return response.json()
-                        .then((data) => {
-                            var latSpan = $("<span hidden>")
-                                .addClass("latitude")
-                                .text(data.results[0].locations[0].latLng.lat)
-                            var lonSpan = $("<span hidden>")
-                                .addClass("longitude")
-                                .text(data.results[0].locations[0].latLng.lon)
-                        });
-                    });
-                } else {
-                    var latSpan = $("<span hidden>")
-                        .addClass("latitude")
-                        .text(eventList[i]._embedded.venues[0].location.latitude);
-                    var lonSpan = $("<span hidden>")
-                        .addClass("longitude")
-                        .text(eventList[i]._embedded.venues[0].location.longitude)
+        if (response.ok) {
+            return response.json()
+            .then((data) => {
+                var eventList = data._embedded.events;
+                // loop for events
+                if ($("#invalid-response")) {
+                    $("#invalid-response").remove()
                 };
-                var foodBtn = $("<button>")
-                    .addClass("food-button")
-                    .text("Nearby Food")
-                // append event containter to events container
-                // create container for event info
-                var event = $("<div>")
-                    .append(eventImg, eventName, eventDateVenue, latSpan, lonSpan, foodBtn);
+                for (var i = 0; i < eventList.length; i++) {  
+                    // create elements for event info
+                    var eventImg = $("<img>")
+                        .attr("src", eventList[i].images[0].url);
+                    var eventName = $("<h4>")
+                        .text(eventList[i].name);
+                    var eventDateVenue = $("<p>")
+                        .text("Date: " + eventList[i].dates.start.localDate + " | " + eventList[i]._embedded.venues[0].name + eventList[i]._embedded.venues[0].city.name + eventList[i]._embedded.venues[0].state.stateCode);
+                    // get lat and lon for the venue of each event and hide it
+                    // if the event doesn't have a location get lat and lon from Mapquest API
+                    if (!eventList[i]._embedded.venues[0].location) {
+                        var eventAddress = eventList[i]._embedded.venues[0].address.line1
+                        var eventCity = eventList[i]._embedded.venues[0].city.name
+                        var eventState = eventList[i]._embedded.venues[0].state.name
+                        fetch("http://open.mapquestapi.com/geocoding/v1/address?key=D6yxIoaQjYKEF0GYIb5DdsdZlv0W5GSM&location=" + eventAddress + "%20" + eventAddress + eventState)
+                        .then((response) => {
+                            return response.json()
+                            .then((data) => {
+                                var latSpan = $("<span hidden>")
+                                    .addClass("latitude")
+                                    .text(data.results[0].locations[0].latLng.lat)
+                                var lonSpan = $("<span hidden>")
+                                    .addClass("longitude")
+                                    .text(data.results[0].locations[0].latLng.lon)
+                            });
+                        });
+                    } else {
+                        var latSpan = $("<span hidden>")
+                            .addClass("latitude")
+                            .text(eventList[i]._embedded.venues[0].location.latitude);
+                        var lonSpan = $("<span hidden>")
+                            .addClass("longitude")
+                            .text(eventList[i]._embedded.venues[0].location.longitude)
+                    };
+                    var foodBtn = $("<button>")
+                        .addClass("food-button")
+                        .text("Nearby Food")
+                    // append event containter to events container
+                    // create container for event info
+                    var event = $("<div>")
+                        .append(eventImg, eventName, eventDateVenue, latSpan, lonSpan, foodBtn);
 
-                $(eventsContainerEl).append(event);
-            };
-            // when certain button is clicked, look at the parent to find specific lat and lon of venue
-            $(".food-button").click(function () {
-                eventLat = $(this).parent().find(".latitude").text()
-                eventLon = $(this).parent().find(".longitude").text()
-                $("#restaurants-container").empty();
-                displayZomato();
-                $("#food-modal").modal("show");
-                
-            })
-            // grabs page total from API and assigns it to totalPages to be used outside of function
-            totalPages = data.page.totalPages
-            // return totalPages
-        });
-    });
+                    $(eventsContainerEl).append(event);
+                };
+                // when certain button is clicked, look at the parent to find specific lat and lon of venue
+                $(".food-button").click(function () {
+                    eventLat = $(this).parent().find(".latitude").text()
+                    eventLon = $(this).parent().find(".longitude").text()
+                    $("#restaurants-container").empty();
+                    displayZomato();
+                    $("#food-modal").modal("show");
+                    
+                })
+                // grabs page total from API and assigns it to totalPages to be used outside of function
+                totalPages = data.page.totalPages
+                // return totalPages
+                saveCity();
+
+            });
+        };
+    })
+    .catch(function(error) {
+        console.log("there was an error")
+        var invalidResponse = $("<p>")
+            .attr("id", "invalid-response")
+            .text("Your search was invalid. Please enter a valid city.")
+        $("#form-container").append(invalidResponse)
+    })
+
 };
 
 // load more button click
