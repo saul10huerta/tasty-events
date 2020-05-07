@@ -93,11 +93,12 @@ var ticketmaster = function (city, pageNumber) {
                 for (var i = 0; i < eventList.length; i++) {  
                     // create elements for event info
                     var eventImg = $("<img>")
+                        .addClass("ui large bordered rounded image")
                         .attr("src", eventList[i].images[0].url);
                     var eventName = $("<h4>")
                         .text(eventList[i].name);
                     var eventDateVenue = $("<p>")
-                        .text("Date: " + eventList[i].dates.start.localDate + " | " + eventList[i]._embedded.venues[0].name + eventList[i]._embedded.venues[0].city.name + eventList[i]._embedded.venues[0].state.stateCode);
+                        .text("Date: " + eventList[i].dates.start.localDate + " | " + "Venue: " + eventList[i]._embedded.venues[0].name + " | City: " + eventList[i]._embedded.venues[0].city.name + ", " + eventList[i]._embedded.venues[0].state.stateCode);
                     // get lat and lon for the venue of each event and hide it
                     // if the event doesn't have a location get lat and lon from Mapquest API
                     if (!eventList[i]._embedded.venues[0].location) {
@@ -114,8 +115,8 @@ var ticketmaster = function (city, pageNumber) {
                                 var lonSpan = $("<span hidden>")
                                     .addClass("longitude")
                                     .text(data.results[0].locations[0].latLng.lon)
-                            });
-                        });
+                            });  
+                        });       
                     } else {
                         var latSpan = $("<span hidden>")
                             .addClass("latitude")
@@ -127,6 +128,17 @@ var ticketmaster = function (city, pageNumber) {
                     var foodBtn = $("<button>")
                         .addClass("food-button")
                         .text("Nearby Food")
+
+                    var subEvent1 = $("<div>")
+                        .addClass("center aligned column")
+                        .append(eventName, eventDateVenue, latSpan, lonSpan, foodBtn);
+                    var subEvent2 = $("<div>")
+                        .addClass("center aligned column")
+                        .append(eventImg);
+                    var event = $("<div>")
+                        .addClass("two column row")
+                        .append(subEvent1,subEvent2);    
+
                     // append event containter to events container
                     // create container for event info
                     var event = $("<div>")
@@ -159,8 +171,6 @@ var ticketmaster = function (city, pageNumber) {
         $("#form-container").append(invalidResponse)
     })
 
-};
-
 // load more button click
 $("#load-more").click(function() {
     // adds 1 to page number and runs ticketmaster function with the next page number which loads underneath current page
@@ -171,6 +181,7 @@ $("#load-more").click(function() {
         $("#load-more").remove()
     };
 });
+
 
 
 
@@ -196,8 +207,8 @@ var displayZomato = function() {
 
 
                 // create a modal to hold restaurants info
-                var restaurantsNameEl = document.createElement("p");
-                restaurantsNameEl.className =" ";
+                var restaurantsNameEl = document.createElement("h3");
+                restaurantsNameEl.className ="ui header";
                 restaurantsNameEl.id = "";
                 restaurantsNameEl.textContent = restName;
                 divEl.appendChild(restaurantsNameEl);
@@ -227,6 +238,7 @@ var displayZomato = function() {
                 divEl.appendChild(restLocationEl);
 
                 var imgEl = document.createElement("img");
+                imgEl.className = "ui large bordered rounded image";
                 imgEl.id = "";
                 imgEl.src = restImg;
                 divEl.appendChild(imgEl);
