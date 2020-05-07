@@ -24,16 +24,7 @@ var ticketmaster = function (city, pageNumber) {
             var eventList = data._embedded.events;
             // loop for events
             for (var i = 0; i < eventList.length; i++) {
-                // create container for event info
-                var event = $("<div>")
-                    .addClass("two column row")
-                    .append(subEvent1,subEvent2);
-                var subEvent1 = $("<div>")
-                    .addClass("center aligned column")
-                    .append(eventName, eventDateVenue, latSpan, lonSpan, foodBtn);
-                var subEvent2 = $("<div>")
-                    .addClass("center aligned column")
-                    .append(eventImg);
+                
                 // create elements for event info
                 var eventImg = $("<img>")
                     .addClass("ui large bordered rounded image")
@@ -71,6 +62,18 @@ var ticketmaster = function (city, pageNumber) {
                 var foodBtn = $("<button>")
                     .addClass("food-button")
                     .text("Nearby Food")
+
+                // create container for event info
+                
+                var subEvent1 = $("<div>")
+                    .addClass("center aligned column")
+                    .append(eventName, eventDateVenue, latSpan, lonSpan, foodBtn);
+                var subEvent2 = $("<div>")
+                    .addClass("center aligned column")
+                    .append(eventImg);
+                var event = $("<div>")
+                    .addClass("two column row")
+                    .append(subEvent1,subEvent2);    
                 // append event containter to events container
                 $(eventsContainerEl).append(event);
             };
