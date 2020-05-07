@@ -8,20 +8,21 @@ var cityForm = document.querySelector("#city-form");
 var eventLat = null;
 var eventLon = null;
 var cityArray = [];
-var savedCityContainerEl = document.querySelector("#save-container")
+var savedCityContainerEl = document.querySelector("#save-container");
+var divEl = document.querySelector("#restaurants-container");
 
 
 var loadCity = function () {
-    cityArray = JSON.parse(localStorage.getItem("city"))
+    cityArray = JSON.parse(localStorage.getItem("city"));
     if (!cityArray) {
-        cityArray = []
+        cityArray = [];
     } 
     else {
         for (var i = 0; i < cityArray.length; i++) {
-            var savedCity = document.createElement("p")
-            savedCity.setAttribute("id", cityArray[i])
-            savedCity.textContent = cityArray[i]
-            savedCityContainerEl.appendChild(savedCity)
+            var savedCity = document.createElement("p");
+            savedCity.setAttribute("id", cityArray[i]);
+            savedCity.textContent = cityArray[i];
+            savedCityContainerEl.appendChild(savedCity);
         };
     };
 };
@@ -33,8 +34,8 @@ $("#clear-history").on("click", function() {
     while (child) {
         savedCityContainerEl.removeChild(child);
         child = savedCityContainerEl.lastElementChild
-    }
-    cityArray = []
+    };
+    cityArray = [];
 });
 
 var saveCity = function () {
@@ -60,6 +61,7 @@ var saveCity = function () {
         localStorage.setItem("city", JSON.stringify(cityArray))
     };
 };
+
 // function to check if cityInput matches value in array
 var checkCity = function () {
     for (var i = 0; i < cityArray.length; i++) {
@@ -68,6 +70,7 @@ var checkCity = function () {
         };
     };
 };
+
 // Form for city
 var formSubmitHandler = function () {
     event.preventDefault();
@@ -75,8 +78,7 @@ var formSubmitHandler = function () {
     cityEntered = cityInput.val()
     ticketmaster(cityEntered, 0);
     // saveCity();
-}
-
+};
 
 // Get data from Ticketmaster
 var ticketmaster = function (city, pageNumber) {
@@ -86,10 +88,11 @@ var ticketmaster = function (city, pageNumber) {
             return response.json()
             .then((data) => {
                 var eventList = data._embedded.events;
-                // loop for events
+                // if there's an invalid respose message when a valid city is entered, remove the message
                 if ($("#invalid-response")) {
-                    $("#invalid-response").remove()
+                    $("#invalid-response").remove();
                 };
+                // loop for events
                 for (var i = 0; i < eventList.length; i++) {  
                     // create elements for event info
                     var eventImg = $("<img>")
@@ -98,8 +101,7 @@ var ticketmaster = function (city, pageNumber) {
                     var eventName = $("<h4>")
                         .text(eventList[i].name);
                     var eventDateVenue = $("<p>")
-                        .text("Date: " + eventList[i].dates.start.localDate + " | " + eventList[i]._embedded.venues[0].name + eventList[i]._embedded.venues[0].city.name + eventList[i]._embedded.venues[0].state.stateCode);
-                    // get lat and lon for the venue of each event and hide it
+                        .text(eventList[i].dates.start.localDate + " | " + eventList[i]._embedded.venues[0].name + " " + eventList[i]._embedded.venues[0].city.name + " " + eventList[i]._embedded.venues[0].state.stateCode);
                     // if the event doesn't have a location get lat and lon from Mapquest API
                     if (!eventList[i]._embedded.venues[0].location) {
                         var eventAddress = eventList[i]._embedded.venues[0].address.line1
@@ -109,6 +111,7 @@ var ticketmaster = function (city, pageNumber) {
                         .then((response) => {
                             return response.json()
                             .then((data) => {
+                                // get lat and lon for the venue of each event and hide it
                                 var latSpan = $("<span hidden>")
                                     .addClass("latitude")
                                     .text(data.results[0].locations[0].latLng.lat)
@@ -118,6 +121,7 @@ var ticketmaster = function (city, pageNumber) {
                             });
                         });
                     } else {
+                        // get lat and lon for the venue of each event and hide it
                         var latSpan = $("<span hidden>")
                             .addClass("latitude")
                             .text(eventList[i]._embedded.venues[0].location.latitude);
@@ -125,10 +129,10 @@ var ticketmaster = function (city, pageNumber) {
                             .addClass("longitude")
                             .text(eventList[i]._embedded.venues[0].location.longitude)
                     };
+                    // add button to find nearby food
                     var foodBtn = $("<button>")
                         .addClass("food-button")
                         .text("Nearby Food")
-                    
                     // create container for event info
                     var subEvent1 = $("<div>")
                         .addClass("center aligned column")
@@ -142,48 +146,41 @@ var ticketmaster = function (city, pageNumber) {
                     // append event containter to events container
                     $(eventsContainerEl).append(event);
                 };
-                // when certain button is clicked, look at the parent to find specific lat and lon of venue
+                // when certain food button is clicked, look at the parent to find specific lat and lon of venue
                 $(".food-button").click(function () {
                     eventLat = $(this).parent().find(".latitude").text()
                     eventLon = $(this).parent().find(".longitude").text()
                     $("#restaurants-container").empty();
                     displayZomato();
                     $("#food-modal").modal("show");
-                    
                 })
                 // grabs page total from API and assigns it to totalPages to be used outside of function
                 totalPages = data.page.totalPages
-                // return totalPages
                 saveCity();
-
             });
         };
     })
+    // if an invalid city is entered, display message 
     .catch(function(error) {
-        console.log("there was an error")
         var invalidResponse = $("<p>")
             .attr("id", "invalid-response")
-            .text("Your search was invalid. Please enter a valid city.")
-        $("#form-container").append(invalidResponse)
-    })
-
+            .text("Your search was invalid. Please enter a valid city.");
+        $("#form-container").append(invalidResponse);
+    });
 };
 
 // load more button click
 $("#load-more").click(function() {
     // adds 1 to page number and runs ticketmaster function with the next page number which loads underneath current page
-    page++
-    ticketmaster("Austin", page);
+    page++;
+    ticketmaster(cityEntered, page);
     // removes the load more button on the last page
     if(page === totalPages-1) {
-        $("#load-more").remove()
+        $("#load-more").remove();
     };
 });
 
-
-
-
-divEl = document.querySelector("#restaurants-container");
+// divEl = document.querySelector("#restaurants-container");
 
 var displayZomato = function() {
     var key = "82359ff64f3766634a1dab8ede2ba7d9";
@@ -194,15 +191,12 @@ var displayZomato = function() {
         return response.json()        
         .then((data) => {
             for(let i = 0; i < data.nearby_restaurants.length; i++) {
-
                 var restName = data.nearby_restaurants[i].restaurant.name;
                 var restLocation = data.nearby_restaurants[i].restaurant.location.address;
                 var restCuisine = data.nearby_restaurants[i].restaurant.cuisines
                 var restCost = data.nearby_restaurants[i].restaurant.average_cost_for_two;
                 var restAggregateRating = data.nearby_restaurants[i].restaurant.user_rating.aggregate_rating;
                 var restImg = data.nearby_restaurants[i].restaurant.featured_image
-
-
                 // create a modal to hold restaurants info
                 var restaurantsNameEl = document.createElement("p");
                 restaurantsNameEl.className =" ";
@@ -238,7 +232,7 @@ var displayZomato = function() {
                 imgEl.id = "";
                 imgEl.src = restImg;
                 divEl.appendChild(imgEl);
-            } ;   
+            };   
         });
     });    
 };
@@ -248,9 +242,9 @@ $("#save-container").on("click", "p", function () {
     var text = $(this)
         .text()
         .trim();
-    cityInput.val(text)
+    cityInput.val(text);
     formSubmitHandler();
-})
+});
 
 loadCity();
 // when city is submitted run form submit handler
