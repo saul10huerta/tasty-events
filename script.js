@@ -170,7 +170,7 @@ var ticketmaster = function (city, pageNumber) {
             .text("Your search was invalid. Please enter a valid city.")
         $("#form-container").append(invalidResponse)
     })
-
+}
 // load more button click
 $("#load-more").click(function() {
     // adds 1 to page number and runs ticketmaster function with the next page number which loads underneath current page
