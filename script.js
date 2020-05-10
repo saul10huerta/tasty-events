@@ -12,6 +12,7 @@ var savedCityContainerEl = document.querySelector("#save-container");
 var divEl = document.querySelector("#restaurants-container");
 
 
+
 var loadCity = function () {
     cityArray = JSON.parse(localStorage.getItem("city"));
     if (!cityArray) {
