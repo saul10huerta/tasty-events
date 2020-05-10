@@ -11,9 +11,9 @@ A simple application to search for neaby event in your local city and find resta
 * Semantic-Ui
 
 ## Link to webpage
-https://andysanchez726.github.io/Project-1/
+https://saul10huerta.github.io/tasty-events/
 
 ![](tasty-events.png)
 
 ### Contribution
-Made by Andy Sanchez & Saul Huerta
+Made by Saul Huerta & Andy Sanchez
